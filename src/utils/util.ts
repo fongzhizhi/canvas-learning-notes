@@ -6,34 +6,50 @@
  */
 export function printStyleLog(
   tag: string,
-  content: any,
-  style?: { [k: string]: string }
+  style?: Record<string, string>,
+  ...items: any
 ) {
-  if (Object.is(tag, undefined)) {
-    tag = "=>";
-  }
   style = Object.assign(
     {
-      color: "#0f0",
-      "font-size": "18px",
+      'color': "#75de75",
+      'font-style': "italic",
+      'background-color': "#333",
+      'padding': "2px",
+      'font-size': "16px",
     },
     style
   );
   const styleStr = cssObj2CssStr(style);
-  console.log(`%c ${tag}`, styleStr, content);
+  if(!tag.includes('%c')) {
+	  tag = '%c' + tag;
+  }
+  console.log(tag, styleStr, ...items);
 }
 
 /**
  * css对象转字符串形式
  * @param cssObj
  */
-export function cssObj2CssStr(cssObj: { [k: string]: string }) {
+export function cssObj2CssStr(cssObj: Record<string, string>) {
   if (!cssObj) {
     return "";
   }
   let str = "";
   for (let key in cssObj) {
-    str += `${key}:${cssObj[key]};`;
+    str += `${key}: ${cssObj[key]};`;
   }
   return str;
+}
+
+/**获取环境上下文 */
+export function autoGlobal(): any {
+  if(typeof window != 'undefined') {
+	return window;
+  }
+  if(typeof self != 'undefined') {
+	return self;
+  }
+  if(typeof globalThis != 'undefined') {
+	return globalThis;
+  }
 }
